@@ -1,0 +1,134 @@
+% demo.tex
+\documentclass[aspectratio=169]{beamer}
+
+% 引入你的自定义包
+\usepackage{quiet_light}
+
+% --- 演示信息 ---
+\title{Quiet Light Design System}
+\subtitle{Beamer Theme Demonstration}
+\author{Sean \& Gemini}
+\date{\today}
+
+\begin{document}
+
+% 1. 标题页
+\maketitle
+
+% 2. 基础排版与列表
+\begin{frame}{Typography \& Lists}
+    这是正文内容的展示。背景应该是淡灰色的 \texttt{QLBg}，文字是深灰色的 \texttt{QLFg}。
+    
+    这里有一段 \alert{高亮文本 (Alert Text)}，应该显示为红色。
+
+    \vspace{0.5cm}
+    
+    \textbf{列表展示：}
+    \begin{itemize}
+        \item 第一点内容 (Item 1)
+        \item 第二点内容，包含 \textit{斜体文字}
+        \item 第三点内容
+        \begin{itemize}
+            \item 子列表项目 A
+            \item 子列表项目 B
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% 3. 区块样式 (Blocks)
+\begin{frame}{Blocks \& Cards}
+    \begin{block}{Standard Block (Purple)}
+        这是默认的 Block，用于展示一般性概念。
+        边框和标题应该是淡紫色/紫色。
+    \end{block}
+
+    \begin{alertblock}{Alert Block (Red)}
+        这是警告 Block，用于强调重要提示或警告。
+        色调为红色。
+    \end{alertblock}
+
+    \begin{exampleblock}{Example Block (Blue)}
+        这是示例 Block，用于展示案例或推论。
+        色调为蓝色。
+    \end{exampleblock}
+\end{frame}
+
+% 4. 表格样式 
+\begin{frame}{Table Card Style}
+    % l X 表示：第一列左对齐(内容少)，第二列自动宽度(内容多)
+    \begin{cardtable}{l X}
+        % 表头背景色
+        \rowcolor{QLBlue!15}
+        \textbf{特性} & \textbf{说明} \\
+        
+        \textbf{护眼配色} & 使用 \texttt{QLBg} (暖灰) 替代纯白，长时间观看更舒适。 \\
+        
+        % 隔行变色 (浅灰背景)
+        \rowcolor{QLBg!50!white}
+        \textbf{卡片设计} & 统一的圆角 (\texttt{arc=3mm}) 和羽化阴影，层次感强。 \\
+        
+        \textbf{稳健代码} & 使用 \texttt{environ} 处理表格，\texttt{tcolorbox} 处理代码，拒绝报错。 \\
+    \end{cardtable}
+\end{frame}
+
+% 5. 代码块样式
+\begin{frame}[fragile]{Code Block Styling}
+    % 注意：如果 slide 包含代码，必须加 [fragile] 参数
+    
+    \begin{codeblock}[python]{DataAnalysis.py}
+import numpy as np
+import pandas as pd
+
+def calculate_metrics(data):
+    # Calculate mean and std
+    mu = np.mean(data)
+    sigma = np.std(data)
+    
+    if sigma > 0:
+        return (data - mu) / sigma
+    else:
+        return np.zeros_like(data)
+    \end{codeblock}
+\end{frame}
+
+% 6. 图片样式
+\begin{frame}{Image Styles}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Command A: \texttt{shadowimage}}
+            \small (拍立得风格，有白边)
+            % 使用 LaTeX 内置示例图片
+            \shadowimage{figures/m.jpg}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \textbf{Command B: \texttt{shadowimageplain}}
+            \small (纯净风格，无白边)
+            % 使用 LaTeX 内置示例图片
+            \shadowimageplain{figures/m.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% 7. 数学公式
+\begin{frame}{Mathematics}
+    行内公式测试：$E = mc^2$ 或 $e^{i\pi} + 1 = 0$。
+    
+    独立公式展示：
+    \[
+        f(x) = \int_{-\infty}^{\infty} \hat{f}(\xi)\,e^{2\pi i \xi x} \,d\xi
+    \]
+    
+    带编号的公式：
+    \begin{equation}
+        \mathbf{A} \mathbf{x} = \lambda \mathbf{x}
+    \end{equation}
+    
+    这里的背景色与页眉的融合应该非常自然，且虚线清晰地划分了区域。
+\end{frame}
+
+\begin{frame}[standout]
+    Thank You
+\end{frame}
+
+\end{document}

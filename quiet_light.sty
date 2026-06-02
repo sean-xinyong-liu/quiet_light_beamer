@@ -1,0 +1,146 @@
+% quiet_light.sty
+\ProvidesPackage{quiet_light}
+
+% --- 1. 基础架构与字体配置 ---
+\usetheme{metropolis}
+
+% 字体设置
+% 注意：这需要使用 XeLaTeX 编译
+% fontset=none 防止 ctex 加载默认字体，由后面手动指定
+\usepackage[fontset=none]{ctex} 
+\usepackage{fontspec}
+
+% 设置中文字体 (Songti TC 是 macOS 自带宋体)
+% AutoFakeBold=2.5 用于给没有粗体的宋体伪造粗体效果
+\setCJKmainfont[AutoFakeBold=2.5]{Songti TC}
+\setCJKsansfont[AutoFakeBold=2.5]{Songti TC} % Beamer 默认用无衬线，这里强行指定为宋体
+\setCJKmonofont{Songti TC}
+
+% 设置英文字体
+% Menlo 是 macOS 自带等宽字体，Scale=0.9 防止代码比中文大太多
+\setmonofont{Menlo}[Scale=0.9]
+
+% 其他宏包
+\usepackage[most]{tcolorbox} 
+\tcbuselibrary{skins, listings} 
+\usepackage{etoolbox} 
+\usepackage{colortbl} 
+\usepackage{booktabs}
+\usepackage{tabularx} 
+\usepackage{environ}  
+\usepackage{tikz} 
+\usepackage{graphicx}
+
+% --- 2. 配色定义 ---
+\usepackage{xcolor}
+\definecolor{QLBg}{RGB}{245, 243, 247} 
+\definecolor{QLPurple}{RGB}{112, 86, 151}
+\definecolor{QLBlue}{RGB}{23, 123, 189}
+\definecolor{QLRed}{RGB}{190, 60, 60}
+\definecolor{QLFg}{RGB}{67, 67, 67} 
+\definecolor{QLGreen}{RGB}{68, 140, 39}
+
+% --- 3. Beamer 基础颜色 ---
+\setbeamercolor{background canvas}{bg=QLBg}
+\setbeamercolor{normal text}{fg=QLFg}
+\setbeamercolor{frametitle}{bg=QLBg, fg=QLPurple}
+\setbeamercolor{palette primary}{bg=QLPurple, fg=white}
+\setbeamercolor{structure}{fg=QLBlue}
+\setbeamercolor{alerted text}{fg=QLRed}
+\setbeamercolor{progress bar}{fg=QLPurple, bg=QLBg}
+
+% --- 4. 自定义标题栏样式 (虚线左右拉满) ---
+\makeatletter
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[%
+      wd=\paperwidth,%
+      sep=0pt,%
+      leftskip=\metropolis@frametitle@padding,%
+      rightskip=\metropolis@frametitle@padding,%
+    ]{frametitle}%
+    \metropolis@frametitlestrut@start%
+    \insertframetitle%
+    \nolinebreak%
+    \metropolis@frametitlestrut@end%
+  \end{beamercolorbox}%
+  \vspace{-1.5ex} 
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[dashed, color=QLPurple!60, line width=0.6pt] 
+         (current page.west |- 0,0) -- (current page.east |- 0,0);
+  \end{tikzpicture}
+}
+\makeatother
+
+% --- 5. 通用卡片样式 ---
+\tcbset{
+    qlcard/.style={
+        enhanced,
+        arc=3mm,
+        boxrule=0pt,
+        left=6pt, right=6pt, top=6pt, bottom=6pt,
+        colback=QLBg!30!white,    
+        drop fuzzy shadow=black!30!QLBg, 
+        separator sign=none,
+    }
+}
+
+% --- 6. 专用表格卡片样式 ---
+\tcbset{tablecardstyle/.style={qlcard, left=0pt, right=0pt, top=0pt, bottom=0pt, boxsep=0pt, clip upper, colback=white}}
+\NewEnviron{cardtable}[1]{%
+    \begin{tcolorbox}[tablecardstyle]\renewcommand{\arraystretch}{1.4}\begin{tabularx}{\linewidth}{#1}\BODY\end{tabularx}\end{tcolorbox}}
+
+% --- 7. Block 定义 ---
+\setbeamertemplate{block begin}{
+    \begin{tcolorbox}[qlcard, title={\insertblocktitle}, fonttitle=\bfseries,
+        colframe=QLPurple!15, colbacktitle=QLPurple!15, coltitle=QLPurple]}
+\setbeamertemplate{block end}{\end{tcolorbox}}
+\setbeamertemplate{block alerted begin}{
+    \begin{tcolorbox}[qlcard, title={\insertblocktitle}, fonttitle=\bfseries,
+        colframe=QLRed!15, colbacktitle=QLRed!15, coltitle=QLRed]}
+\setbeamertemplate{block alerted end}{\end{tcolorbox}}
+\setbeamertemplate{block example begin}{
+    \begin{tcolorbox}[qlcard, title={\insertblocktitle}, fonttitle=\bfseries,
+        colframe=QLBlue!15, colbacktitle=QLBlue!15, coltitle=QLBlue]}
+\setbeamertemplate{block example end}{\end{tcolorbox}}
+
+% --- 8. 代码块 ---
+\newtcblisting{codeblock}[2][]{qlcard, listing only, listing engine=listings, title={#2},
+    listing options={language={#1}, basicstyle=\ttfamily\small\color{QLFg},
+        keywordstyle=\color{QLPurple}\bfseries, stringstyle=\color{QLGreen},
+        commentstyle=\color{gray}, breaklines=true, columns=flexible,
+        basewidth=0.5em, showstringspaces=false, numbers=none},
+    code={\ifstrempty{#2}{\tcbset{colframe=QLBg!30!white, top=-2pt}}
+        {\tcbset{colframe=QLPurple!15, colbacktitle=QLPurple!15, coltitle=QLPurple, fonttitle=\bfseries\small}}}}
+
+% --- 9. 图片命令  ---
+
+% 逻辑解释：
+% 默认参数改为：width=\linewidth, height=0.7\textheight, keepaspectratio
+% 意思就是：宽度最多占满一列，高度最多占版面的 70%，取两者中较小的那个尺寸渲染。
+
+% 命令 A：带白色边框
+\newcommand{\shadowimage}[2][width=\linewidth, height=0.7\textheight, keepaspectratio]{
+    \begin{center}
+        \begin{tcolorbox}[qlcard, 
+            colback=white, 
+            boxsep=0pt, left=4pt, right=4pt, top=4pt, bottom=4pt, 
+            hbox, halign=center, valign=center]
+            \includegraphics[#1]{#2}
+        \end{tcolorbox}
+    \end{center}
+}
+
+% 命令 B：无边框
+\newcommand{\shadowimageplain}[2][width=\linewidth, height=0.7\textheight, keepaspectratio]{
+    \begin{center}
+        \begin{tcolorbox}[qlcard, 
+            colback=white,    
+            boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, 
+            clip upper,       
+            hbox, halign=center, valign=center]
+            \includegraphics[#1]{#2}
+        \end{tcolorbox}
+    \end{center}
+}
+\endinput
