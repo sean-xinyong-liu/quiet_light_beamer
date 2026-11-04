@@ -1,101 +1,204 @@
 # Quiet Light Beamer Theme
 
-基于 **Metropolis** 深度定制的 Beamer 模板。主打**极简、护眼、卡片式**设计，适用于学术报告与技术分享。
+基于 **Metropolis** 定制的 Beamer 模板。目标是提供一套安静、护眼、卡片式的演示文稿样式，适用于学术报告、课程讲义与技术分享。
 
-![Preview](demo.png)
+[打开示例 PDF](demo.pdf)
 
-## ✨ 特性 (Features)
+## 特性
 
-* **🎨 护眼配色**：使用暖灰色 (`QLBg`) 作为背景，深灰色 (`QLFg`) 正文，紫色 (`QLPurple`) 作为主色调。
-* **📏 极简标题栏**：背景透明融合，底部配有贯穿全屏的精细虚线。
-* **🃏 卡片式设计**：代码块、表格、引用块均采用统一的圆角卡片 + 柔和阴影风格。
-* **🦓 斑马纹表格**：摒弃传统实线网格，采用交替背景色（斑马纹）区分行，数据展示更清晰。
-* **🖼 智能图片容器**：提供“拍立得风格”和“纯净风格”两种图片指令，自动适配布局。
-* **🔤 预设字体**：内置 macOS 优化字体配置（宋体 Songti TC + Menlo），支持伪粗体。
+- **护眼配色**：暖灰背景 `QLBg`、深灰正文 `QLFg`，用紫色 `QLPurple` 建立主题识别。
+- **极简标题栏**：浅背景融合页面，使用贯穿全屏的细虚线分隔标题区。
+- **统一卡片系统**：普通卡片、Beamer blocks、代码块、表格和图片容器复用同一套圆角与阴影。
+- **中文友好**：默认使用 XeLaTeX/LuaLaTeX，并预设 macOS 的 `Songti TC` 与 `Menlo`。
+- **可配置字体**：可通过包选项替换字体，或关闭内置字体配置以接入自己的导言区。
+- **兼容原有命令**：保留 `cardtable`、`codeblock`、`\shadowimage`、`\shadowimageplain` 等核心接口。
 
-## 🛠 依赖与编译 (Requirements)
+## 依赖
 
-由于使用了 `fontspec` 和 `ctex` 设置特定字体，**必须使用 XeLaTeX 编译**。
+- LaTeX 发行版：TeX Live、MacTeX 或 MiKTeX
+- 编译器：推荐 `XeLaTeX`
+- 主题依赖：`metropolis`
+- 常用宏包：`ctex`、`fontspec`、`tcolorbox`、`tabularx`、`tikz`
 
-* **编译器**: `XeLaTeX`
-* **系统**: 默认配置适配 **macOS** (依赖 `Songti TC` 和 `Menlo` 字体)。
-    * *Windows/Linux 用户需在 `.sty` 文件中修改为系统已有字体。*
+默认字体配置面向 macOS：
 
-## 🚀 快速开始 (Quick Start)
+- CJK：`Songti TC`
+- Monospace：`Menlo`
 
-1.  将 `quiet_light.sty` 放入项目目录。
-2.  在 `.tex` 文件中引入：
-    ```latex
-    \documentclass[aspectratio=1610]{beamer}
-    \usepackage{quiet_light}
-    ```
-3.  编译：
-    ```bash
-    xelatex demo.tex
-    ```
+Windows/Linux 用户建议在载入包时指定本机字体。
 
-## 📝 核心命令速查 (Cheat Sheet)
+## 快速开始
 
-### 1. 表格 (Card Table)
-自动包裹在白色圆角卡片中。**建议使用斑马纹替代实线边框**：
 ```latex
-\begin{cardtable}{l X} 
-    % 表头背景
-    \rowcolor{QLBlue!15} 
-    \textbf{特性} & \textbf{说明} \\
-    
-    % 内容行
-    内容A & 详情A \\
-    
-    % 斑马纹背景 (隔行添加)
-    \rowcolor{QLBg!50!white} 
-    内容B & 详情B \\
+\documentclass[aspectratio=169]{beamer}
+\usepackage{quiet_light}
+
+\title{Quiet Light Demo}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Hello}
+  这是一页 Quiet Light 风格的幻灯片。
+\end{frame}
+
+\end{document}
+```
+
+编译：
+
+```bash
+make demo
+```
+
+或直接运行：
+
+```bash
+latexmk -xelatex -outdir=build -interaction=nonstopmode demo.tex
+```
+
+## 字体配置
+
+默认配置：
+
+```latex
+\usepackage{quiet_light}
+```
+
+指定跨平台字体：
+
+```latex
+\usepackage[
+  cjkmainfont={Noto Serif CJK SC},
+  cjksansfont={Noto Serif CJK SC},
+  cjkmonofont={Noto Sans Mono CJK SC},
+  monofont={JetBrains Mono},
+  fakebold=2.0
+]{quiet_light}
+```
+
+如果你希望完全自己管理字体与中文支持：
+
+```latex
+\usepackage[fonts=false]{quiet_light}
+```
+
+`nofonts` 是 `fonts=false` 的简写：
+
+```latex
+\usepackage[nofonts]{quiet_light}
+```
+
+## 核心命令
+
+### 卡片
+
+```latex
+\begin{quietcard}
+  任意内容都可以放进一个基础卡片。
+\end{quietcard}
+```
+
+可以直接传入 `tcolorbox` 选项：
+
+```latex
+\begin{quietcard}[colback=white]
+  自定义背景的卡片。
+\end{quietcard}
+```
+
+### 表格
+
+```latex
+\begin{cardtable}{l X}
+  \rowcolor{QLBlue!15}
+  \textbf{特性} & \textbf{说明} \\
+  护眼配色 & 使用暖灰背景替代纯白。 \\
+  \rowcolor{QLBg!50!white}
+  卡片设计 & 使用统一圆角与柔和阴影。 \\
 \end{cardtable}
-````
+```
 
-### 2\. 图片 (Images)
-
-支持自动缩放与双重约束（宽/高），推荐指定 `height`。
-
-  * **带白边 (拍立得风格)**:
-
-    ```latex
-    \shadowimage[height=5cm]{img.jpg}
-    ```
-
-  * **无白边 (纯净风格)**:
-
-    ```latex
-    \shadowimageplain[height=5cm]{img.png}
-
-### 3\. 代码块 (Code Block)
-
-带语法高亮和文件名的卡片。
+`cardtable` 也支持追加 `tcolorbox` 选项：
 
 ```latex
-% [语言]{标题}
-\begin{codeblock}[python]{script.py}
+\begin{cardtable}[colback=QLBg!20!white]{l X}
+  A & B \\
+\end{cardtable}
+```
+
+### 代码块
+
+包含代码的 frame 需要加 `[fragile]`：
+
+```latex
+\begin{frame}[fragile]{Code}
+  \begin{codeblock}[python]{script.py}
 def hello():
     print("Hello World")
+  \end{codeblock}
+\end{frame}
+```
+
+如果不需要标题，可以传空标题：
+
+```latex
+\begin{codeblock}[python]{}
+print("Quiet Light")
 \end{codeblock}
 ```
 
-### 4\. 区块 (Blocks)
+### 图片
+
+带白边：
 
 ```latex
-\begin{block}{标题} ... \end{block}        % 紫色 (默认)
-\begin{alertblock}{标题} ... \end{alertblock}  % 红色 (警告)
-\begin{exampleblock}{标题} ... \end{exampleblock} % 蓝色 (示例)
+\shadowimage[height=5cm]{figures/m.jpg}
 ```
 
-## 💡 排版建议
+无白边：
 
-  * **多列布局**：包含图片时，建议使用 `\begin{columns}[T]` 确保顶部对齐。
-  * **图片防溢出**：如果在某一页图片超出底边，请手动在命令中指定更小的高度参数，如 `[height=4cm]`。
-* **内容过多**：如果单页内容稍多导致溢出，可使用 [shrink=n] 参数（n 为缩小百分比）自动缩放：
-    ```latex
-    % 整体缩小 10% (即按 90% 比例显示)
-    \begin{frame}[shrink=10]{标题} 
-    ... 
-    \end{frame}
-    ```
+```latex
+\shadowimageplain[height=5cm]{figures/m.png}
+```
+
+别名：
+
+```latex
+\qlimage{figures/m.png}
+\qlimageframed{figures/m.jpg}
+```
+
+### Blocks
+
+```latex
+\begin{block}{标题}
+  普通说明。
+\end{block}
+
+\begin{alertblock}{警告}
+  重要提示。
+\end{alertblock}
+
+\begin{exampleblock}{示例}
+  示例内容。
+\end{exampleblock}
+```
+
+## 排版建议
+
+- 多列布局建议使用 `\begin{columns}[T]` 保持顶部对齐。
+- 图片过高时优先指定 `height`，例如 `\shadowimage[height=4cm]{...}`。
+- 单页内容过多时可以临时使用 `\begin{frame}[shrink=10]{标题}`，但更推荐拆页。
+- 代码页必须使用 `[fragile]`。
+
+## 构建命令
+
+```bash
+make        # 编译目录下所有 .tex 文件
+make demo   # 只编译 demo.tex
+make clean  # 删除 build 目录
+make help   # 查看帮助
+```

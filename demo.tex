@@ -7,13 +7,16 @@
 % --- 演示信息 ---
 \title{Quiet Light Design System}
 \subtitle{Beamer Theme Demonstration}
-\author{Sean \& Gemini}
+\author{Sean}
 \date{\today}
 
 \begin{document}
 
 % 1. 标题页
-\maketitle
+\begin{frame}[plain]
+    \vspace*{-0.56cm}
+    \titlepage
+\end{frame}
 
 % 2. 基础排版与列表
 \begin{frame}{Typography \& Lists}
@@ -26,7 +29,7 @@
     \textbf{列表展示：}
     \begin{itemize}
         \item 第一点内容 (Item 1)
-        \item 第二点内容，包含 \textit{斜体文字}
+        \item 第二点内容，包含 \alert{强调文字}
         \item 第三点内容
         \begin{itemize}
             \item 子列表项目 A
@@ -75,19 +78,15 @@
 \begin{frame}[fragile]{Code Block Styling}
     % 注意：如果 slide 包含代码，必须加 [fragile] 参数
     
-    \begin{codeblock}[python]{DataAnalysis.py}
+    \begin{codeblock}[python]{metrics.py}
 import numpy as np
-import pandas as pd
 
 def calculate_metrics(data):
     # Calculate mean and std
     mu = np.mean(data)
     sigma = np.std(data)
     
-    if sigma > 0:
-        return (data - mu) / sigma
-    else:
-        return np.zeros_like(data)
+    return (data - mu) / sigma
     \end{codeblock}
 \end{frame}
 
@@ -98,14 +97,14 @@ def calculate_metrics(data):
             \textbf{Command A: \texttt{shadowimage}}
             \small (拍立得风格，有白边)
             % 使用 LaTeX 内置示例图片
-            \shadowimage{figures/m.jpg}
+            \shadowimage[width=0.9\linewidth,height=4.1cm,keepaspectratio]{figures/m.jpg}
         \end{column}
         
         \begin{column}{0.48\textwidth}
             \textbf{Command B: \texttt{shadowimageplain}}
             \small (纯净风格，无白边)
             % 使用 LaTeX 内置示例图片
-            \shadowimageplain{figures/m.png}
+            \qlimage[width=0.9\linewidth,height=4.1cm,keepaspectratio]{figures/m.png}
         \end{column}
     \end{columns}
 \end{frame}
